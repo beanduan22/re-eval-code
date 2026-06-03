@@ -1,0 +1,94 @@
+[
+  {
+    "method": "ALERT",
+    "model": "CodeBERT",
+    "task": "CloneDetection",
+    "dataset": "CD",
+    "index": "7",
+    "source_csv": "SSDCM/AASamples/CodeBERT/CD/attack_alert_all.csv",
+    "audit_detail": "STRIKE/evaluation/result/all_methods_cd_semantic_audit_detail.csv:4",
+    "failure_type": "syntax error",
+    "notes": "Identifier replacements corrupted method calls and declarations, e.g. md.update became mdmaterialpdate and assignments lost equals signs.",
+    "audit": {
+      "syntax_valid": false,
+      "semantic_audit_pass": false
+    },
+    "program_length": 87,
+    "identifier_num": 5,
+    "replaced_identifiers": "encrypt:encrypted,plaintext:plainstring,md:material,raw:response,hash:url,",
+    "query_times": 688,
+    "time_cost": 0.12479585806528727,
+    "attack_type": "GA",
+    "original_code": "    public synchronized String encrypt(String plaintext) throws Exception {\n        MessageDigest md = null;\n        try {\n            md = MessageDigest.getInstance(\"MD5\");\n        } catch (Exception e) {\n        }\n        try {\n            md.update(plaintext.getBytes(\"UTF-8\"));\n        } catch (Exception e) {\n        }\n        byte raw[] = md.digest();\n        String hash = (new BASE64Encoder()).encode(raw);\n        return hash;\n    }\n",
+    "adversarial_code": "    public synchronized String encrypted(String plainstring) throws Exception {\n        MessageDigest material = null;\n        try {\n            material = MessageDigest.getInstance(\"MD5\");\n        } catch (Exception e) {\n        }\n        try {\n            mdmaterialpdate(plainstring.getBytes(\"UTF-8\"));\n        } catch (Exception e) {\n        }\n        byte raw[] responseaterial.digest();\n        String hash urlew BASE64Encoder()).encode(response);\n        return url;\n    }\n"
+  },
+  {
+    "method": "BEAM",
+    "model": "CodeT5",
+    "task": "CloneDetection",
+    "dataset": "CD",
+    "index": "756",
+    "source_csv": "SSDCM/AASamples/CodeT5/CD/attack_beam_all.csv",
+    "audit_detail": "STRIKE/evaluation/result/all_methods_cd_semantic_audit_detail.csv:7704",
+    "failure_type": "binding/compile error",
+    "notes": "The substitutions rename both a String local and a URL local to file in the same scope.",
+    "audit": {
+      "syntax_valid": false,
+      "semantic_audit_pass": false
+    },
+    "program_length": 136,
+    "identifier_num": 6,
+    "replaced_identifiers": "systemID:SystemIDS,url:file,id:file,",
+    "query_times": 183,
+    "time_cost": 0.1617997129758199,
+    "attack_type": "Beam",
+    "original_code": "    public AsciiParser(String systemID) throws GridBagException {\n        String id = systemID;\n        if (id.endsWith(\".xml\")) {\n            id = StringUtils.replace(id, \".xml\", \".gbc\");\n        }\n        ClassLoader loader = this.getClass().getClassLoader();\n        URL url = loader.getResource(id);\n        if (url == null) {\n            throw new GridBagException(\"Cannot located resource : \\\"\" + systemID + \"\\\".\");\n        }\n        try {\n            InputStream inStream = url.openStream();\n            constraints = getLines(inStream);\n            inStream.close();\n        } catch (IOException ie1) {\n            throw new GridBagException(\"Cannot read from resource \" + id);\n        }\n    }\n",
+    "adversarial_code": "    public AsciiParser(String SystemIDS) throws GridBagException {\n        String file = SystemIDS;\n        if (file.endsWith(\".xml\")) {\n            file = StringUtils.replace(file, \".xml\", \".gbc\");\n        }\n        ClassLoader loader = this.getClass().getClassLoader();\n        URL file = loader.getResource(file);\n        if (file == null) {\n            throw new GridBagException(\"Cannot located resource : \\\"\" + SystemIDS + \"\\\".\");\n        }\n        try {\n            InputStream inStream = file.openStream();\n            constraints = getLines(inStream);\n            inStream.close();\n        } catch (IOException ie1) {\n            throw new GridBagException(\"Cannot read from resource \" + file);\n        }\n    }\n"
+  },
+  {
+    "method": "CODA",
+    "model": "CodeBERT",
+    "task": "CloneDetection",
+    "dataset": "CD",
+    "index": "90",
+    "source_csv": "SSDCM/AASamples/CodeBERT/CD/attack_coda_all.csv",
+    "audit_detail": "STRIKE/evaluation/result/all_methods_cd_semantic_audit_detail.csv:1140",
+    "failure_type": "syntax error",
+    "notes": "Inserted string literals contain raw newlines, which are not valid Java string literals.",
+    "audit": {
+      "syntax_valid": false,
+      "semantic_audit_pass": false
+    },
+    "program_length": 756,
+    "identifier_num": 0.99981284,
+    "replaced_identifiers": "",
+    "query_times": 950,
+    "time_cost": 0.3755090554555257,
+    "attack_type": "ident",
+    "original_code": "    public void convert(File src, File dest) throws IOException {\n        InputStream in = new BufferedInputStream(new FileInputStream(src));\n        DcmParser p = pfact.newDcmParser(in);\n        Dataset ds = fact.newDataset();\n        p.setDcmHandler(ds.getDcmHandler());\n        try {\n            FileFormat format = p.detectFileFormat();\n            if (format != FileFormat.ACRNEMA_STREAM) {\n                System.out.println(\"\\n\" + src + \": not an ACRNEMA stream!\");\n                return;\n            }\n            p.parseDcmFile(format, Tags.PixelData);\n            if (ds.contains(Tags.StudyInstanceUID) || ds.contains(Tags.SeriesInstanceUID) || ds.contains(Tags.SOPInstanceUID) || ds.contains(Tags.SOPClassUID)) {\n                System.out.println(\"\\n\" + src + \": contains UIDs!\" + \" => probable already DICOM - do not convert\");\n                return;\n            }\n            boolean hasPixelData = p.getReadTag() == Tags.PixelData;\n            boolean inflate = hasPixelData && ds.getInt(Tags.BitsAllocated, 0) == 12;\n            int pxlen = p.getReadLength();\n            if (hasPixelData) {\n                if (inflate) {\n                    ds.putUS(Tags.BitsAllocated, 16);\n                    pxlen = pxlen * 4 / 3;\n                }\n                if (pxlen != (ds.getInt(Tags.BitsAllocated, 0) >>> 3) * ds.getInt(Tags.Rows, 0) * ds.getInt(Tags.Columns, 0) * ds.getInt(Tags.NumberOfFrames, 1) * ds.getInt(Tags.NumberOfSamples, 1)) {\n                    System.out.println(\"\\n\" + src + \": mismatch pixel data length!\" + \" => do not convert\");\n                    return;\n                }\n            }\n            ds.putUI(Tags.StudyInstanceUID, uid(studyUID));\n            ds.putUI(Tags.SeriesInstanceUID, uid(seriesUID));\n            ds.putUI(Tags.SOPInstanceUID, uid(instUID));\n            ds.putUI(Tags.SOPClassUID, classUID);\n            if (!ds.contains(Tags.NumberOfSamples)) {\n                ds.putUS(Tags.NumberOfSamples, 1);\n            }\n            if (!ds.contains(Tags.PhotometricInterpretation)) {\n                ds.putCS(Tags.PhotometricInterpretation, \"MONOCHROME2\");\n            }\n            if (fmi) {\n                ds.setFileMetaInfo(fact.newFileMetaInfo(ds, UIDs.ImplicitVRLittleEndian));\n            }\n            OutputStream out = new BufferedOutputStream(new FileOutputStream(dest));\n            try {\n            } finally {\n                ds.writeFile(out, encodeParam());\n                if (hasPixelData) {\n                    if (!skipGroupLen) {\n                        out.write(PXDATA_GROUPLEN);\n                        int grlen = pxlen + 8;\n                        out.write((byte) grlen);\n                        out.write((byte) (grlen >> 8));\n                        out.write((byte) (grlen >> 16));\n                        out.write((byte) (grlen >> 24));\n                    }\n                    out.write(PXDATA_TAG);\n                    out.write((byte) pxlen);\n                    out.write((byte) (pxlen >> 8));\n                    out.write((byte) (pxlen >> 16));\n                    out.write((byte) (pxlen >> 24));\n                }\n                if (inflate) {\n                    int b2, b3;\n                    for (; pxlen > 0; pxlen -= 3) {\n                        out.write(in.read());\n                        b2 = in.read();\n                        b3 = in.read();\n                        out.write(b2 & 0x0f);\n                        out.write(b2 >> 4 | ((b3 & 0x0f) << 4));\n                        out.write(b3 >> 4);\n                    }\n                } else {\n                    for (; pxlen > 0; --pxlen) {\n                        out.write(in.read());\n                    }\n                }\n                out.close();\n            }\n            System.out.print('.');\n        } finally {\n            in.close();\n        }\n    }\n",
+    "adversarial_code": "    public void convert(File sforegroundColor, File destFolder) throws IOException {\n        InputStream index = new BufferedInputStream(new FileInputStream(sforegroundColor));\n        DcmParser url = pfact.newDcmParser(index);\n        Dataset ds = fact.newDataset();\n        url.setDcmHandler(ds.getDcmHandler());\n        try {\n            FileFormat format = url.detectFileFormat();\n            if (format != FileFormat.ACRNEMA_STREAM) {\nString sflm = \"\n\";\nString encodeFileToFile = \": not an ACRNEMA stream!\";\n                String temp_digest = sflm + sforegroundColor + encodeFileToFile;System.out.println(temp_digest);\n                return;\n            }\n            url.parseDcmFile(format, Tags.PixelData);\n            if (ds.contains(Tags.StudyInstanceUID) || ds.contains(Tags.SeriesInstanceUID) || ds.contains(Tags.SOPInstanceUID) || ds.contains(Tags.SOPClassUID)) {\nString dossierSymboles = \"\n\";\nString downloadURL = \": contains UIDs!\";\nString roleBean = \" => probable already DICOM - do not convert\";\n                String qparams = dossierSymboles + sforegroundColor + downloadURL + roleBean;System.out.println(qparams);\n                return;\n            }\n            boolean hasPixelData = url.getReadTag() == Tags.PixelData;\nint transform = 0;\nint txtList = 12;\n            boolean inflate = hasPixelData && ds.getInt(Tags.BitsAllocated, transform) == txtList;\n            int pxlen = url.getReadLength();\n            if (hasPixelData) {\n                if (inflate) {\nint fous = 16;\n                    ds.putUS(Tags.BitsAllocated, fous);\nint MalformedURLException = 4;\nint diff_timeseries = 3;\n                    pxlen = pxlen * MalformedURLException / diff_timeseries;\n                }\nint statement = 0;\nint errorSSdf = 3;\nint currentFile = 0;\nint makeRequest = 0;\nint paths = 1;\nint coachmaxstr = 1;\n                if (pxlen != (ds.getInt(Tags.BitsAllocated, statement) >>> errorSSdf) * ds.getInt(Tags.Rows, statement) * ds.getInt(Tags.Columns, statement) * ds.getInt(Tags.NumberOfFrames, paths) * ds.getInt(Tags.NumberOfSamples, paths)) {\nString versionRegionCount = \"\n\";\nString insertCommand = \": mismatch pixel data length!\";\nString getObjectInputStreamFromServlet = \" => do not convert\";\n                    String inStream = versionRegionCount + sforegroundColor + insertCommand + getObjectInputStreamFromServlet;System.out.println(inStream);\n                    return;\n                }\n            }\n            ds.putUI(Tags.StudyInstanceUID, uid(studyUID));\n            ds.putUI(Tags.SeriesInstanceUID, uid(seriesUID));\n            ds.putUI(Tags.SOPInstanceUID, uid(instUID));\n            ds.putUI(Tags.SOPClassUID, classUID);\n            if (!ds.contains(Tags.NumberOfSamples)) {\nint outputter = 1;\n                ds.putUS(Tags.NumberOfSamples, outputter);\n            }\n            if (!ds.contains(Tags.PhotometricInterpretation)) {\nString scripts = \"MONOCHROME2\";\n                ds.putCS(Tags.PhotometricInterpretation, scripts);\n            }\n            if (fmi) {\n                ds.setFileMetaInfo(fact.newFileMetaInfo(ds, UIDs.ImplicitVRLittleEndian));\n            }\n            OutputStream out = new BufferedOutputStream(new FileOutputStream(destFolder));\n            try {\n            } finally {\n                ds.writeFile(out, encodeParam());\n                if (hasPixelData) {\n                    if (!skipGroupLen) {\n                        out.write(PXDATA_GROUPLEN);\nint content_length = 8;\n                        int grlen = pxlen + content_length;\n                        out.write((byte) grlen);\nint yrange = 8;\n                        out.write((byte) (grlen >> yrange));\nint aLine_k = 16;\n                        out.write((byte) (grlen >> aLine_k));\nint digestResponse = 24;\n                        out.write((byte) (grlen >> digestResponse));\n                    }\n                    out.write(PXDATA_TAG);\n                    out.write((byte) pxlen);\nint ct = 8;\n                    out.write((byte) (pxlen >> ct));\nint contentEncoding = 16;\n                    out.write((byte) (pxlen >> contentEncoding));\nint sbValueBeforeMD5 = 24;\n                    out.write((byte) (pxlen >> sbValueBeforeMD5));\n                }\n                if (inflate) {\n                    int b2, b3;\nint reqProperties = 0;\nint consumer = 3;\n                    for (; pxlen > reqProperties; pxlen pxlen=pxlen- consumer) {\n                        out.write(index.read());\n                        b2 = index.read();\n                        b3 = index.read();\n                        out.write(b2 & 0x0f);\nint topicName = 4;\nint TableName = 4;\n                        out.write(b2 >> topicName | ((b3 & 0x0f) << topicName));\nint getGroup = 4;\n                        out.write(b3 >> getGroup);\n                    }\n                } else {\nint inputLine9 = 0;\nint itr = 1;\n                    for (; pxlen > inputLine9; =-itrpxlen) {\n                        out.write(index.read());\n                    }\n                }\n                out.close();\n            }\n            System.out.print('.');\n        } finally {\n            index.close();\n        }\n    }\n"
+  },
+  {
+    "method": "ITGEN",
+    "model": "CodeBERT",
+    "task": "CloneDetection",
+    "dataset": "CD",
+    "index": "20",
+    "source_csv": "SSDCM/AASamples/CodeBERT/CD/attack_itgen_all.csv",
+    "audit_detail": "STRIKE/evaluation/result/all_methods_cd_semantic_audit_detail.csv:2362",
+    "failure_type": "syntax error",
+    "notes": "Identifier replacement corrupted expressions and loop syntax.",
+    "audit": {
+      "syntax_valid": false,
+      "semantic_audit_pass": false
+    },
+    "program_length": 221,
+    "identifier_num": 6,
+    "replaced_identifiers": "destination: destinate,length:url,",
+    "query_times": 200,
+    "time_cost": 0.05160301129023234,
+    "attack_type": "itgen",
+    "original_code": "    public static void main(String[] args) {\n        String source, destination;\n        if (args[0].toLowerCase().endsWith(\".gz\")) {\n            source = args[0];\n            destination = source.substring(0, source.length() - 3);\n        } else {\n            source = args[0] + \".gz\";\n            destination = args[0];\n        }\n        InputStream is = null;\n        OutputStream os = null;\n        try {\n            is = new GZIPInputStream(new FileInputStream(source));\n            os = new FileOutputStream(destination);\n            byte[] buffer = new byte[8192];\n            for (int length; (length = is.read(buffer)) != -1; ) os.write(buffer, 0, length);\n        } catch (IOException e) {\n            System.err.println(\"Fehler: Kann nicht entpacken \" + args[0]);\n        } finally {\n            if (os != null) try {\n                os.close();\n            } catch (IOException e) {\n            }\n            if (is != null) try {\n                is.close();\n            } catch (IOException e) {\n            }\n        }\n    }\n",
+    "adversarial_code": "    public static void main(String[] args) {\n        String source,  destinate;\n        if (args[0].toLowerCase().endsWith(\".gz\")) {\n            source = args[0];\n             destinate = source.substring(0, source.lurl) - 3);\n        } else {\n            source = args[0] + \".gz\";\n             destinate = args[0];\n        }\n        InputStream is = null;\n        OutputStream os = null;\n        try {\n            is = new GZIPInputStream(new FileInputStream(source));\n            os = new FileOutputStream( destinate);\n            byte[] buffer = new byte[8192];\n            for (int url; (lenurlis.read(buffer)) != -1; ) os.write(buffer, 0, lengthurl\n        } catch (IOException e) {\n            System.err.println(\"Fehler: Kann nicht entpacken \" + args[0]);\n        } finally {\n            if (os != null) try {\n                os.close();\n            } catch (IOException e) {\n            }\n            if (is != null) try {\n                is.close();\n            } catch (IOException e) {\n            }\n        }\n    }\n"
+  }
+]
