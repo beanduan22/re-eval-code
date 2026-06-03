@@ -90,5 +90,28 @@
     "attack_type": "itgen",
     "original_code": "    public static void main(String[] args) {\n        String source, destination;\n        if (args[0].toLowerCase().endsWith(\".gz\")) {\n            source = args[0];\n            destination = source.substring(0, source.length() - 3);\n        } else {\n            source = args[0] + \".gz\";\n            destination = args[0];\n        }\n        InputStream is = null;\n        OutputStream os = null;\n        try {\n            is = new GZIPInputStream(new FileInputStream(source));\n            os = new FileOutputStream(destination);\n            byte[] buffer = new byte[8192];\n            for (int length; (length = is.read(buffer)) != -1; ) os.write(buffer, 0, length);\n        } catch (IOException e) {\n            System.err.println(\"Fehler: Kann nicht entpacken \" + args[0]);\n        } finally {\n            if (os != null) try {\n                os.close();\n            } catch (IOException e) {\n            }\n            if (is != null) try {\n                is.close();\n            } catch (IOException e) {\n            }\n        }\n    }\n",
     "adversarial_code": "    public static void main(String[] args) {\n        String source,  destinate;\n        if (args[0].toLowerCase().endsWith(\".gz\")) {\n            source = args[0];\n             destinate = source.substring(0, source.lurl) - 3);\n        } else {\n            source = args[0] + \".gz\";\n             destinate = args[0];\n        }\n        InputStream is = null;\n        OutputStream os = null;\n        try {\n            is = new GZIPInputStream(new FileInputStream(source));\n            os = new FileOutputStream( destinate);\n            byte[] buffer = new byte[8192];\n            for (int url; (lenurlis.read(buffer)) != -1; ) os.write(buffer, 0, lengthurl\n        } catch (IOException e) {\n            System.err.println(\"Fehler: Kann nicht entpacken \" + args[0]);\n        } finally {\n            if (os != null) try {\n                os.close();\n            } catch (IOException e) {\n            }\n            if (is != null) try {\n                is.close();\n            } catch (IOException e) {\n            }\n        }\n    }\n"
+  },
+  {
+    "method": "CODA",
+    "model": "CodeBERT",
+    "task": "AuthorshipAttribution",
+    "dataset": "AA-GCJ",
+    "index": "3",
+    "language": "python",
+    "source_csv": "projects/jintao/SpliceAttack/CodeBERT/AuthorshipAttribution/attack/result/attack_coda_all.csv",
+    "failure_type": "syntax/binding error",
+    "notes": "CODA inserts unindented assignments into a Python function body and introduces undefined names such as tab7, aT, and rT.",
+    "audit": {
+      "syntax_valid": false,
+      "semantic_audit_pass": false
+    },
+    "program_length": 152,
+    "identifier_num": 0.914608,
+    "replaced_identifiers": "",
+    "query_times": 65,
+    "time_cost": 0.019407689571380615,
+    "attack_type": "struct",
+    "original_code": "def solve():\n      r1 = int(raw_input())\n      a1 = [map(int, raw_input().split()) for i in xrange(4)]\n      r2 = int(raw_input())\n      a2 = [map(int, raw_input().split()) for i in xrange(4)]\n      ans = -1\n      for i in xrange(1, 17):\n          if i in a1[r1-1] and i in a2[r2-1]:\n              if ans != -1:\n                  return \"Bad magician!\"\n              ans = i\n      if ans == -1:\n          return \"Volunteer cheated!\"\n      return ans\n  for t in xrange(int(raw_input())):\n      print \"Case #%d:\" % (t + 1), solve()\n",
+    "adversarial_code": "def solve():\n      r1 = int(raw_input())\ngetNum = 4;\n      a1 = [map(int, raw_input().split()) for i in xrange(getNum)]\n      r2 = int(raw_input())\nd1 = 4;\n      a2 = [map(int, raw_input().split()) for i in xrange(d1)]\nmsq = 1;\n      ans = -msq\ntab = 1;\nx = 17;\n      for i in xrange(tab, tab7):\nT = 1;\nz = 1;\n          if i in aT[rT-T] and i in a2[r2-T]:\nB = 1;\n              if ans != -B:\nC = \"Bad magician!\";\n                  return C\n              ans = i\nk = 1;\n      if ans == -k:\nrn = \"Volunteer cheated!\";\n          return rn\n      return ans\n  for t in xrange(int(raw_input())):\nreadMatrix = \"Case #%d:\";\nm = 1;\n      speed = readMatrix % (t + m), solve()\n      print speed\n"
   }
 ]

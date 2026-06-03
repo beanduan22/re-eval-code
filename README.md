@@ -21,4 +21,5 @@ Each record includes:
 | BEAM | CodeT5 | CloneDetection | 756 | binding/compile error | Renaming maps two locals in the same scope to `file`. |
 | CODA | CodeBERT | CloneDetection | 90 | syntax error | Inserted Java string literals contain raw newlines. |
 | ITGEN | CodeBERT | CloneDetection | 20 | syntax error | Replacement corrupts expressions and loop syntax. |
+| CODA | CodeBERT | AuthorshipAttribution | 3 | syntax/binding error | Inserts unindented Python statements and undefined names. |
 
